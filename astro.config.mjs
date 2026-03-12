@@ -4,8 +4,13 @@ import AstroPWA from '@vite-pwa/astro';
 
 import tailwindcss from '@tailwindcss/vite';
 
+const site = process.env.SITE ?? 'https://YOUR_GITHUB_USERNAME.github.io';
+const base = process.env.BASE_PATH ?? '/';
+
 // https://astro.build/config
 export default defineConfig({
+  site,
+  base,
   integrations: [
     AstroPWA({
       registerType: 'autoUpdate',
@@ -17,8 +22,8 @@ export default defineConfig({
         theme_color: '#0c1b1d',
         background_color: '#081012',
         display: 'standalone',
-        start_url: '/',
-        scope: '/',
+        start_url: base,
+        scope: base,
         lang: 'es-CO',
         icons: [
           {
