@@ -8,7 +8,9 @@ import {
   Download,
   LayoutGrid,
   LocateFixed,
+  Moon,
   RefreshCw,
+  Sun,
   X
 } from 'lucide-astro';
 import type { HolidayAppPayload } from '../lib/types';
@@ -152,6 +154,32 @@ const { payload } = Astro.props;
           </div>
 
           <p class="toolbar__view-hint md:hidden" data-mobile-view-label aria-live="polite">Vista anual</p>
+
+          <div class="toolbar__cluster toolbar__cluster--theme" role="group" aria-label="Tema de la interfaz">
+            <span class="sr-only" id="theme-toggle-label">Selector de tema</span>
+            <div class="flowbite-button-group flowbite-button-group--segmented" role="group" aria-labelledby="theme-toggle-label">
+              <button
+                class="toolbar-button theme-toggle"
+                type="button"
+                data-theme-option="light"
+                aria-pressed="true"
+                aria-label="Activar tema claro"
+              >
+                <Sun size={17} stroke-width={1.8} />
+                <span class="toolbar-button__label">Claro</span>
+              </button>
+              <button
+                class="toolbar-button theme-toggle"
+                type="button"
+                data-theme-option="dark"
+                aria-pressed="false"
+                aria-label="Activar tema oscuro"
+              >
+                <Moon size={17} stroke-width={1.8} />
+                <span class="toolbar-button__label">Oscuro</span>
+              </button>
+            </div>
+          </div>
 
           <div class="toolbar__cluster toolbar__cluster--actions flowbite-button-group flowbite-button-group--segmented" role="group" aria-label="Acciones del calendario">
             <button

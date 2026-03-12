@@ -22,6 +22,21 @@
   --radius-md: 16px;
 }
 
+:root[data-theme='dark'] {
+  --bg: #0f1a1d;
+  --panel: rgba(22, 35, 39, 0.88);
+  --panel-border: rgba(151, 191, 201, 0.2);
+  --text: #d8ebef;
+  --muted: rgba(194, 217, 223, 0.78);
+  --accent: #81d7bb;
+  --accent-soft: rgba(129, 215, 187, 0.2);
+  --accent-secondary: #9ac9ef;
+  --holiday-soft: rgba(181, 117, 206, 0.22);
+  --holiday-border: rgba(191, 137, 211, 0.42);
+  --holiday-strong: #e1b9f1;
+  --shadow: 0 28px 70px rgba(2, 8, 10, 0.45);
+}
+
 * {
   box-sizing: border-box;
 }
@@ -42,6 +57,14 @@ body {
     linear-gradient(140deg, #f7fcfb 0%, #eef8f6 40%, #f4fbf8 100%);
 }
 
+:root[data-theme='dark'] body {
+  background:
+    radial-gradient(circle at top left, rgba(86, 152, 134, 0.22), transparent 24%),
+    radial-gradient(circle at 85% 12%, rgba(109, 145, 172, 0.2), transparent 22%),
+    radial-gradient(circle at 18% 88%, rgba(117, 105, 63, 0.2), transparent 18%),
+    linear-gradient(140deg, #0f1a1d 0%, #122127 40%, #0f1a1d 100%);
+}
+
 body::before {
   content: '';
   position: fixed;
@@ -53,6 +76,13 @@ body::before {
     linear-gradient(90deg, rgba(39, 66, 74, 0.04) 1px, transparent 1px);
   background-size: 120px 120px;
   mask-image: radial-gradient(circle at center, black 46%, transparent 92%);
+}
+
+:root[data-theme='dark'] body::before {
+  opacity: 0.2;
+  background-image:
+    linear-gradient(rgba(194, 217, 223, 0.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(194, 217, 223, 0.07) 1px, transparent 1px);
 }
 
 img,
@@ -141,6 +171,11 @@ button {
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(247, 252, 251, 0.96));
   box-shadow: var(--shadow);
   backdrop-filter: blur(18px);
+}
+
+:root[data-theme='dark'] .surface-panel {
+  border-color: rgba(151, 191, 201, 0.2);
+  background: linear-gradient(180deg, rgba(20, 33, 38, 0.93), rgba(13, 25, 30, 0.95));
 }
 
 .surface-panel::after {
@@ -402,6 +437,13 @@ button {
   backdrop-filter: blur(14px);
 }
 
+:root[data-theme='dark'] .control-dock {
+  border-color: rgba(151, 191, 201, 0.16);
+  background:
+    linear-gradient(180deg, rgba(33, 50, 56, 0.5), transparent),
+    rgba(16, 30, 35, 0.85);
+}
+
 .control-dock__primary,
 .control-dock__secondary {
   display: grid;
@@ -623,6 +665,19 @@ button {
   box-shadow: inset 0 0 0 1px rgba(104, 195, 163, 0.22);
 }
 
+.theme-toggle.is-active {
+  background: linear-gradient(140deg, rgba(104, 195, 163, 0.24), rgba(139, 191, 232, 0.18));
+  box-shadow: inset 0 0 0 1px rgba(104, 195, 163, 0.24);
+}
+
+.toolbar__cluster--theme .flowbite-button-group {
+  width: 100%;
+}
+
+:root[data-theme='dark'] .toolbar__cluster--theme .theme-toggle:not(.is-active) {
+  color: rgba(194, 217, 223, 0.84);
+}
+
 .flowbite-dropdown {
   z-index: 10;
   width: min(18rem, calc(100vw - 3rem));
@@ -632,6 +687,11 @@ button {
   border-radius: 1rem;
   background: rgba(255, 255, 255, 0.96);
   box-shadow: var(--shadow);
+}
+
+:root[data-theme='dark'] .flowbite-dropdown {
+  border-color: rgba(151, 191, 201, 0.2);
+  background: rgba(19, 32, 37, 0.98);
 }
 
 .flowbite-dropdown-item {
@@ -659,6 +719,11 @@ button {
   visibility: hidden;
 }
 
+:root[data-theme='dark'] .flowbite-tooltip {
+  border-color: rgba(151, 191, 201, 0.18);
+  background: rgba(19, 32, 37, 0.96);
+}
+
 .flowbite-tooltip.invisible {
   opacity: 0;
   visibility: hidden;
@@ -684,6 +749,33 @@ button {
   border-radius: var(--radius-lg);
   border: 1px solid rgba(111, 141, 156, 0.16);
   background: rgba(255, 255, 255, 0.72);
+}
+
+:root[data-theme='dark'] .feedback-state__inner,
+:root[data-theme='dark'] .empty-state,
+:root[data-theme='dark'] .calendar-card,
+:root[data-theme='dark'] .masthead__summary-card,
+:root[data-theme='dark'] .masthead__kicker,
+:root[data-theme='dark'] .masthead__tags span,
+:root[data-theme='dark'] .view-switcher__list,
+:root[data-theme='dark'] .flowbite-button-group,
+:root[data-theme='dark'] .week-day,
+:root[data-theme='dark'] .event-item,
+:root[data-theme='dark'] .day-cell,
+:root[data-theme='dark'] .modal-detail-card,
+:root[data-theme='dark'] .flowbite-modal__close,
+:root[data-theme='dark'] .flowbite-modal__header,
+:root[data-theme='dark'] .flowbite-modal__footer,
+:root[data-theme='dark'] .pwa-toast,
+:root[data-theme='dark'] .flowbite-dropdown-trigger,
+:root[data-theme='dark'] .toolbar-button,
+:root[data-theme='dark'] .nav-button,
+:root[data-theme='dark'] .feedback-state__button,
+:root[data-theme='dark'] .pwa-toast__button,
+:root[data-theme='dark'] .flowbite-dropdown-item {
+  border-color: rgba(151, 191, 201, 0.2);
+  background: rgba(24, 38, 43, 0.9);
+  color: var(--text);
 }
 
 .feedback-state__inner.is-error {
@@ -1154,6 +1246,10 @@ button {
   backdrop-filter: blur(4px);
 }
 
+:root[data-theme='dark'] .loading-overlay {
+  background: rgba(11, 22, 26, 0.7);
+}
+
 .loading-overlay p {
   margin: 0;
   color: var(--muted);
@@ -1237,6 +1333,10 @@ button {
     display: flex;
     align-items: center;
     flex-wrap: wrap;
+  }
+
+  .toolbar__cluster--theme {
+    justify-content: flex-end;
   }
 
   .toolbar-button,

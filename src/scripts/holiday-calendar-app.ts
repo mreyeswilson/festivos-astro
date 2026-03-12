@@ -36,6 +36,10 @@ interface BeforeInstallPromptEvent extends Event {
 }
 
 type StatusMode = 'ready' | 'loading' | 'error';
+type ThemeMode = 'light' | 'dark';
+
+const VIEW_STORAGE_KEY = 'festivos:calendar-view';
+const THEME_STORAGE_KEY = 'festivos:theme';
 
 function escapeHtml(value: string): string {
   return value
@@ -49,6 +53,7 @@ function escapeHtml(value: string): string {
 class HolidayCalendarAppElement extends HTMLElement {
   private payload!: HolidayAppPayload;
   private view: CalendarView = 'year';
+  private theme: ThemeMode = 'light';
   private focusDate = new Date();
   private holidaysByYear = new Map<number, HolidayItem[]>();
   private currentHolidayMap = new Map<string, HolidayItem[]>();
@@ -90,7 +95,9 @@ class HolidayCalendarAppElement extends HTMLElement {
 
   connectedCallback(): void {
     this.payload = this.readPayload();
-    this.view = this.payload.initialView;
+    this.view = this.readStoredView() ?? this.payload.initialView;
+    this.theme = this.readStoredTheme() ?? this.readPreferredTheme() ?? 'light';
+    this.applyTheme(this.theme, false);
     const today = todayDate();
     this.focusDate = new Date(Date.UTC(this.payload.initialYear, today.getUTCMonth(), today.getUTCDate()));
     this.status = this.payload.initialError ? 'error' : 'ready';
@@ -200,6 +207,7 @@ class HolidayCalendarAppElement extends HTMLElement {
     this.querySelectorAll<HTMLButtonElement>('[data-view]').forEach((button) => {
       button.addEventListener('click', async () => {
         this.view = button.dataset.view as CalendarView;
+        this.persistView();
         await this.syncVisibleYears(false);
       });
     });
@@ -207,8 +215,16 @@ class HolidayCalendarAppElement extends HTMLElement {
     this.querySelectorAll<HTMLButtonElement>('[data-view-option]').forEach((button) => {
       button.addEventListener('click', async () => {
         this.view = button.dataset.viewOption as CalendarView;
+        this.persistView();
         document.getElementById('view-dropdown-button')?.click();
         await this.syncVisibleYears(false);
+      });
+    });
+
+    this.querySelectorAll<HTMLButtonElement>('[data-theme-option]').forEach((button) => {
+      button.addEventListener('click', () => {
+        const requestedTheme = button.dataset.themeOption as ThemeMode;
+        this.applyTheme(requestedTheme, true);
       });
     });
 
@@ -390,6 +406,12 @@ class HolidayCalendarAppElement extends HTMLElement {
 
     this.querySelectorAll<HTMLButtonElement>('[data-view-option]').forEach((button) => {
       const isActive = button.dataset.viewOption === this.view;
+      button.classList.toggle('is-active', isActive);
+      button.setAttribute('aria-pressed', String(isActive));
+    });
+
+    this.querySelectorAll<HTMLButtonElement>('[data-theme-option]').forEach((button) => {
+      const isActive = button.dataset.themeOption === this.theme;
       button.classList.toggle('is-active', isActive);
       button.setAttribute('aria-pressed', String(isActive));
     });
@@ -790,6 +812,58 @@ class HolidayCalendarAppElement extends HTMLElement {
 
     const context = this.canvas.getContext('2d');
     context?.setTransform(ratio, 0, 0, ratio, 0, 0);
+  }
+
+  private readStoredView(): CalendarView | null {
+    const storedValue = this.readStorageValue(VIEW_STORAGE_KEY);
+    if (storedValue === 'year' || storedValue === 'month' || storedValue === 'week') {
+      return storedValue;
+    }
+    return null;
+  }
+
+  private persistView(): void {
+    this.writeStorageValue(VIEW_STORAGE_KEY, this.view);
+  }
+
+  private readStoredTheme(): ThemeMode | null {
+    const storedValue = this.readStorageValue(THEME_STORAGE_KEY);
+    if (storedValue === 'light' || storedValue === 'dark') {
+      return storedValue;
+    }
+    return null;
+  }
+
+  private readPreferredTheme(): ThemeMode | null {
+    if (typeof window === 'undefined') {
+      return null;
+    }
+
+    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  }
+
+  private applyTheme(theme: ThemeMode, persist: boolean): void {
+    this.theme = theme;
+    document.documentElement.setAttribute('data-theme', theme);
+
+    if (persist) {
+      this.writeStorageValue(THEME_STORAGE_KEY, theme);
+      this.render();
+    }
+  }
+
+  private readStorageValue(key: string): string | null {
+    try {
+      return window.localStorage.getItem(key);
+    } catch {
+      return null;
+    }
+  }
+
+  private writeStorageValue(key: string, value: string): void {
+    try {
+      window.localStorage.setItem(key, value);
+    } catch {}
   }
 }
 
