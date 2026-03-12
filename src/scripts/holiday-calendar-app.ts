@@ -62,7 +62,7 @@ class HolidayCalendarAppElement extends HTMLElement {
 
   private periodLabel!: HTMLElement;
   private rangeLabel!: HTMLElement;
-  private totalSummary!: HTMLElement;
+  private totalSummary: HTMLElement | null = null;
   private nextSummary!: HTMLElement;
   private nextSummaryCountdown!: HTMLElement;
   private nextSummaryStatus!: HTMLElement;
@@ -128,7 +128,7 @@ class HolidayCalendarAppElement extends HTMLElement {
   private bindNodes(): void {
     this.periodLabel = this.querySelector<HTMLElement>('[data-period-label]')!;
     this.rangeLabel = this.querySelector<HTMLElement>('[data-range-label]')!;
-    this.totalSummary = this.querySelector<HTMLElement>('[data-summary-total]')!;
+    this.totalSummary = this.querySelector<HTMLElement>('[data-summary-total]');
     this.nextSummary = this.querySelector<HTMLElement>('[data-summary-next]')!;
     this.nextSummaryCountdown = this.querySelector<HTMLElement>('[data-summary-next-countdown]')!;
     this.nextSummaryStatus = this.querySelector<HTMLElement>('[data-summary-next-status]')!;
@@ -354,7 +354,9 @@ class HolidayCalendarAppElement extends HTMLElement {
     const combined = this.getVisibleYears().flatMap((year) => this.holidaysByYear.get(year) ?? []);
     const nextInYear = nextHoliday(activeHolidays, todayDate());
 
-    this.totalSummary.textContent = String(activeHolidays.length);
+    if (this.totalSummary) {
+      this.totalSummary.textContent = String(activeHolidays.length);
+    }
     if (nextInYear) {
       const nextHolidayDate = parseIsoDate(nextInYear.date);
       this.nextSummaryHolidayIso = nextInYear.date;
