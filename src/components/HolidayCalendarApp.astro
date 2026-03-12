@@ -1,0 +1,264 @@
+---
+import {
+  CalendarDays,
+  CalendarRange,
+  ChevronDown,
+  ChevronLeft,
+  ChevronRight,
+  Download,
+  LayoutGrid,
+  LocateFixed,
+  RefreshCw,
+  X
+} from 'lucide-astro';
+import type { HolidayAppPayload } from '../lib/types';
+
+interface Props {
+  payload: HolidayAppPayload;
+}
+
+const { payload } = Astro.props;
+---
+
+<section class="holiday-app-shell">
+  <div class="ambient-orbit ambient-orbit--one"></div>
+  <div class="ambient-orbit ambient-orbit--two"></div>
+
+  <holiday-calendar-app class="holiday-app" aria-label="Calendario de festivos de Colombia">
+    <canvas class="particle-canvas" data-particle-canvas aria-hidden="true"></canvas>
+    <script type="application/json" data-app-payload is:inline set:html={JSON.stringify(payload)}></script>
+
+    <header class="masthead reveal-rise">
+      <div class="masthead__panel surface-panel">
+        <div class="masthead__copy">
+          <div class="masthead__intro">
+            <span class="masthead__kicker">Calendario oficial {payload.initialYear}</span>
+            <h1>Festivos Colombia</h1>
+          </div>
+        </div>
+
+        <div class="masthead__summary" aria-label="Resumen del calendario activo">
+          <article class="masthead__summary-card masthead__summary-card--next">
+            <span class="masthead__summary-label">Siguiente festivo</span>
+            <strong data-summary-next>Consultando proximo hito</strong>
+            <div class="masthead__summary-countdown" aria-live="polite">
+              <strong class="masthead__summary-countdown-value" data-summary-next-countdown>Calculando contador</strong>
+              <span class="masthead__summary-countdown-status" data-summary-next-status hidden>Hoy</span>
+              <span class="masthead__summary-countdown-date" data-summary-next-date>Fecha pendiente</span>
+            </div>
+          </article>
+        </div>
+      </div>
+    </header>
+
+    <section class="calendar-stage surface-panel reveal-rise">
+      <div class="control-dock">
+        <div class="control-dock__primary">
+          <div class="toolbar__titles">
+            <p class="toolbar__kicker">Ventana activa</p>
+            <h2 data-period-label>Anio</h2>
+            <p data-range-label>Calendario completo</p>
+          </div>
+
+          <div class="toolbar__navigation">
+            <div class="flowbite-button-group flowbite-button-group--segmented" role="group" aria-label="Navegacion del periodo">
+              <button
+                class="nav-button"
+                type="button"
+                data-prev
+                data-tooltip-target="tooltip-prev"
+                aria-label="Periodo anterior"
+              >
+                <ChevronLeft size={18} stroke-width={1.8} />
+                <span class="nav-button__label">Anterior</span>
+              </button>
+              <button
+                class="nav-button"
+                type="button"
+                data-next
+                data-tooltip-target="tooltip-next"
+                aria-label="Periodo siguiente"
+              >
+                <span class="nav-button__label">Siguiente</span>
+                <ChevronRight size={18} stroke-width={1.8} />
+              </button>
+            </div>
+          </div>
+
+          <div class="view-switcher hidden md:block">
+            <ul
+              class="view-switcher__list text-sm font-medium"
+              role="tablist"
+              aria-label="Cambiar vista del calendario"
+            >
+              <li>
+                <button class="flowbite-tab is-active" type="button" data-view="year" aria-pressed="true">
+                  <LayoutGrid size={18} stroke-width={1.8} />
+                  Anual
+                </button>
+              </li>
+              <li>
+                <button class="flowbite-tab" type="button" data-view="month" aria-pressed="false">
+                  <CalendarRange size={18} stroke-width={1.8} />
+                  Mensual
+                </button>
+              </li>
+              <li>
+                <button class="flowbite-tab" type="button" data-view="week" aria-pressed="false">
+                  <CalendarDays size={18} stroke-width={1.8} />
+                  Semanal
+                </button>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="control-dock__secondary">
+          <div class="md:hidden">
+            <button
+              class="flowbite-dropdown-trigger"
+              id="view-dropdown-button"
+              data-dropdown-toggle="view-dropdown-menu"
+              data-dropdown-placement="bottom-end"
+              aria-haspopup="true"
+              type="button"
+            >
+              Vista
+              <ChevronDown size={16} stroke-width={1.8} />
+            </button>
+
+            <div id="view-dropdown-menu" class="flowbite-dropdown hidden" aria-labelledby="view-dropdown-button">
+              <ul class="py-2 text-sm" aria-label="Selector de vistas">
+                <li>
+                  <button class="flowbite-dropdown-item" type="button" data-view-option="year">
+                    <LayoutGrid size={16} stroke-width={1.8} />
+                    Anual
+                  </button>
+                </li>
+                <li>
+                  <button class="flowbite-dropdown-item" type="button" data-view-option="month">
+                    <CalendarRange size={16} stroke-width={1.8} />
+                    Mensual
+                  </button>
+                </li>
+                <li>
+                  <button class="flowbite-dropdown-item" type="button" data-view-option="week">
+                    <CalendarDays size={16} stroke-width={1.8} />
+                    Semanal
+                  </button>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <p class="toolbar__view-hint md:hidden" data-mobile-view-label aria-live="polite">Vista anual</p>
+
+          <div class="toolbar__cluster toolbar__cluster--actions flowbite-button-group flowbite-button-group--segmented" role="group" aria-label="Acciones del calendario">
+            <button
+              class="toolbar-button"
+              type="button"
+              data-today
+              data-tooltip-target="tooltip-today"
+              aria-label="Ir a hoy"
+            >
+              <LocateFixed size={18} stroke-width={1.8} />
+              <span class="toolbar-button__label">Hoy</span>
+            </button>
+            <button
+              class="toolbar-button"
+              type="button"
+              data-refresh
+              data-tooltip-target="tooltip-refresh"
+              aria-label="Actualizar datos"
+            >
+              <RefreshCw size={18} stroke-width={1.8} />
+              <span class="toolbar-button__label">Actualizar</span>
+            </button>
+            <button
+              class="toolbar-button toolbar-button--install"
+              type="button"
+              data-install
+              data-tooltip-target="tooltip-install"
+              aria-label="Instalar aplicacion"
+              hidden
+            >
+              <Download size={18} stroke-width={1.8} />
+              <span class="toolbar-button__label">Instalar</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div id="tooltip-prev" role="tooltip" class="flowbite-tooltip">Periodo anterior<div class="tooltip-arrow" data-popper-arrow></div></div>
+      <div id="tooltip-next" role="tooltip" class="flowbite-tooltip">Periodo siguiente<div class="tooltip-arrow" data-popper-arrow></div></div>
+      <div id="tooltip-today" role="tooltip" class="flowbite-tooltip">Volver a hoy<div class="tooltip-arrow" data-popper-arrow></div></div>
+      <div id="tooltip-refresh" role="tooltip" class="flowbite-tooltip">Refrescar API<div class="tooltip-arrow" data-popper-arrow></div></div>
+      <div id="tooltip-install" role="tooltip" class="flowbite-tooltip">Instalar PWA<div class="tooltip-arrow" data-popper-arrow></div></div>
+
+      <div class="loading-overlay" data-loading hidden>
+        <div class="loading-orb"></div>
+        <p>Cargando festivos...</p>
+      </div>
+
+      <div class="feedback-state" data-feedback hidden></div>
+      <div class="calendar-view" data-view-root></div>
+
+      <template data-modal-template>
+        <div id="holiday-detail-modal" tabindex="-1" aria-hidden="true" class="flowbite-modal hidden">
+          <div class="flowbite-modal__dialog">
+            <div class="flowbite-modal__content surface-panel">
+              <div class="flowbite-modal__header">
+                <div>
+                  <p class="eyebrow">Detalle del festivo</p>
+                  <h3 data-modal-title>Festivo</h3>
+                </div>
+                <button type="button" class="flowbite-modal__close" data-modal-close aria-label="Cerrar detalle">
+                  <span>Cerrar</span>
+                  <X size={18} stroke-width={1.8} />
+                </button>
+              </div>
+              <div class="flowbite-modal__body" data-modal-scroll>
+                <div class="modal-hero">
+                  <div class="modal-countdown">
+                    <span class="modal-countdown__label">Referencia temporal</span>
+                    <strong data-modal-countdown>--</strong>
+                    <p data-modal-date>--</p>
+                  </div>
+                  <p class="modal-hero__note">Consulta nombres, tipologia oficial y coincidencias del mismo dia sin perder el contexto del calendario.</p>
+                </div>
+                <div class="modal-detail-grid">
+                  <article class="modal-detail-card">
+                    <span class="modal-detail-card__label">Nombre local</span>
+                    <strong data-modal-local-name>--</strong>
+                  </article>
+                  <article class="modal-detail-card">
+                    <span class="modal-detail-card__label">Nombre internacional</span>
+                    <strong data-modal-name>--</strong>
+                  </article>
+                  <article class="modal-detail-card modal-detail-card--wide">
+                    <span class="modal-detail-card__label">Tipo</span>
+                    <div data-modal-types class="modal-detail-card__chips"></div>
+                  </article>
+                  <article class="modal-detail-card modal-detail-card--wide">
+                    <span class="modal-detail-card__label">Festivos del dia</span>
+                    <div data-modal-list class="modal-detail-list"></div>
+                  </article>
+                </div>
+              </div>
+              <div class="flowbite-modal__footer">
+                <p class="modal-footer__note">El contenido se desplaza dentro de este panel para mantener visibles las acciones.</p>
+                <button type="button" class="toolbar-button toolbar-button--install modal-footer__button" data-modal-close>
+                  Cerrar detalle
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </template>
+    </section>
+  </holiday-calendar-app>
+</section>
+
+<script>
+  import '../scripts/holiday-calendar-app.ts';
+</script>

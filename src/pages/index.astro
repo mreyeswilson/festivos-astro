@@ -1,11 +1,34 @@
 ---
-import Welcome from '../components/Welcome.astro';
+import HolidayCalendarApp from '../components/HolidayCalendarApp.astro';
 import Layout from '../layouts/Layout.astro';
+import { fetchHolidaysForYear } from '../lib/api/holidays';
+import type { HolidayAppPayload, HolidayItem } from '../lib/types';
 
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+const now = new Date();
+const initialYear = now.getUTCFullYear();
+
+let initialHolidays: HolidayItem[] = [];
+let initialError: string | null = null;
+
+try {
+  initialHolidays = await fetchHolidaysForYear(initialYear);
+} catch (error) {
+  initialError = error instanceof Error ? error.message : 'No fue posible cargar los festivos iniciales.';
+}
+
+const payload: HolidayAppPayload = {
+  initialYear,
+  initialView: 'year',
+  initialHolidays,
+  initialError
+};
 ---
 
-<Layout>
-	<Welcome />
+<Layout
+  title="Festivos Colombia | Calendario anual, mensual y semanal"
+  description="Explora los festivos de Colombia en una interfaz editorial, instalable y sincronizada desde una API externa."
+>
+  <main class="page-shell">
+    <HolidayCalendarApp payload={payload} />
+  </main>
 </Layout>
